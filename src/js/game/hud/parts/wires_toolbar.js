@@ -12,6 +12,7 @@ import { MetaReaderBuilding } from "../../buildings/reader";
 import { MetaFilterBuilding } from "../../buildings/filter";
 import { MetaDisplayBuilding } from "../../buildings/display";
 import { MetaStorageBuilding } from "../../buildings/storage";
+import { MetaNoteBlockBuilding } from "../../buildings/note_block";
 
 export class HUDWiresToolbar extends HUDBaseToolbar {
     constructor(root) {
@@ -32,6 +33,7 @@ export class HUDWiresToolbar extends HUDBaseToolbar {
                 MetaLeverBuilding,
                 MetaFilterBuilding,
                 MetaDisplayBuilding,
+                MetaNoteBlockBuilding,
             ],
             visibilityCondition: () =>
                 !this.root.camera.getIsMapOverlayActive() && this.root.currentLayer === "wires",

@@ -730,6 +730,11 @@ buildings:
             name: Item Producer
             description: Available in sandbox mode only, outputs the given signal from the wires layer on the regular layer.
 
+    note_block:
+        default:
+            name: &note_block Note Block
+            description: Plays a note corresponding to its wires input when an item passes through.
+
 storyRewards:
     # Those are the rewards gained from completing the store
     reward_cutter_and_trash:
@@ -1157,6 +1162,7 @@ keybindings:
         analyzer: *analyzer
         comparator: *comparator
         item_producer: Item Producer (Sandbox)
+        note_block: *note_block
         # ---
 
         pipette: Pipette

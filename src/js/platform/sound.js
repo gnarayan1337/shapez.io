@@ -252,10 +252,8 @@ export class SoundInterface {
         }
 
         let volume = this.soundVolume;
-        if (!root.camera.isWorldPointOnScreen(worldPosition)) {
-            volume = this.soundVolume / 5; // In the old implementation this value was fixed to 0.2 => 20% of 1.0
-        }
-        volume *= clamp(root.camera.zoomLevel / 3);
+        volume *= clamp(1 - (root.camera.center.toTileSpace().distance(worldPosition) - 20) / 30);
+        volume *= clamp(1 + root.camera.zoomLevel - 0.9);
         this.sounds[key].play(clamp(volume));
     }
 

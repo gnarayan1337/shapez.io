@@ -10,6 +10,8 @@ import { GameSystemWithFilter } from "../game_system_with_filter";
 import { BOOL_TRUE_SINGLETON, isTruthyItem } from "../items/boolean_item";
 import { ColorItem, COLOR_ITEM_SINGLETONS } from "../items/color_item";
 import { ShapeItem } from "../items/shape_item";
+import { SOUNDS } from "../../platform/sound";
+import { Vector } from "../../core/vector";
 
 /**
  * We need to allow queuing charges, otherwise the throughput will stall
@@ -59,6 +61,7 @@ export class ItemProcessorSystem extends GameSystemWithFilter {
             [enumItemProcessorTypes.painterQuad]: this.process_PAINTER_QUAD,
             [enumItemProcessorTypes.hub]: this.process_HUB,
             [enumItemProcessorTypes.reader]: this.process_READER,
+            [enumItemProcessorTypes.note_block]: this.process_NOTEBLOCK,
         };
 
         // Bind all handlers
@@ -548,6 +551,29 @@ export class ItemProcessorSystem extends GameSystemWithFilter {
         const readerComp = payload.entity.components.BeltReader;
         readerComp.lastItemTimes.push(this.root.time.now());
         readerComp.lastItem = item;
+    }
+
+    /**
+     * @param {ProcessorImplementationPayload} payload
+     */
+    process_NOTEBLOCK(payload) {
+        // Pass through the item
+        const item = payload.itemsBySlot[0];
+        payload.outItems.push({
+            item,
+            doNotTrack: true,
+        });
+
+        const network = payload.entity.components.WiredPins.slots[0].linkedNetwork;
+        const networkValue = network && network.hasValue() ? network.currentValue : null;
+        if (!isTruthyItem(networkValue)) {
+            return;
+        }
+        const staticComp = payload.entity.components.StaticMapEntity;
+        this.root.soundProxy.play3D(
+            SOUNDS.placeBuilding,
+            staticComp.origin.add(staticComp.getTileSize().divideScalar(2))
+        );
     }
 
     /**

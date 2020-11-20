@@ -19,6 +19,7 @@ export const enumItemProcessorTypes = {
     hub: "hub",
     filter: "filter",
     reader: "reader",
+    note_block: "note_block",
 };
 
 /** @enum {string} */
