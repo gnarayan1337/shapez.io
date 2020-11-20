@@ -255,8 +255,12 @@ export class ReadWriteProxy {
                     if (contents.version > this.getCurrentVersion()) {
                         return Promise.reject("stored-data-is-newer");
                     }
-
-                    if (contents.version < this.getCurrentVersion()) {
+                    console.log(contents);
+                    if (
+                        contents.version < this.getCurrentVersion() ||
+                        !contents.mods ||
+                        !contents.mods.includes("playZ")
+                    ) {
                         logger.log(
                             "Trying to migrate data object from version",
                             contents.version,

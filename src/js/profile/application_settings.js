@@ -3,7 +3,7 @@ import { Application } from "../application";
 /* typehints:end */
 
 import { ReadWriteProxy } from "../core/read_write_proxy";
-import { BoolSetting, EnumSetting, RangeSetting, BaseSetting } from "./setting_types";
+import { BoolSetting, EnumSetting, RangeSetting, BaseSetting, BoolSettingShort } from "./setting_types";
 import { createLogger } from "../core/logging";
 import { ExplainedResult } from "../core/explained_result";
 import { THEMES, applyGameTheme } from "../game/theme";
@@ -166,6 +166,14 @@ export const allApplicationSettings = [
          */
         (app, value) => app.sound.setSoundVolume(value)
     ),
+    new BoolSettingShort(
+        "soundsMuted",
+        enumCategories.general,
+        /**
+         * @param {Application} app
+         */
+        (app, value) => app.sound.setSoundsMuted(value)
+    ),
     new RangeSetting(
         "musicVolume",
         enumCategories.general,
@@ -173,6 +181,14 @@ export const allApplicationSettings = [
          * @param {Application} app
          */
         (app, value) => app.sound.setMusicVolume(value)
+    ),
+    new BoolSettingShort(
+        "musicMuted",
+        enumCategories.general,
+        /**
+         * @param {Application} app
+         */
+        (app, value) => app.sound.setMusicMuted(value)
     ),
 
     new BoolSetting(
@@ -296,6 +312,8 @@ class SettingsStorage {
         this.uiScale = "regular";
         this.fullscreen = G_IS_STANDALONE;
 
+        this.soundsMuted = false;
+        this.musicMuted = false;
         this.soundVolume = 1.0;
         this.musicVolume = 1.0;
 
@@ -539,7 +557,7 @@ export class ApplicationSettings extends ReadWriteProxy {
         return 30;
     }
 
-    /** @param {{settings: SettingsStorage, version: number}} data */
+    /** @param {{settings: SettingsStorage, version: number, mods?: Array<string>}} data */
     migrate(data) {
         // Simply reset before
         if (data.version < 5) {
@@ -681,6 +699,17 @@ export class ApplicationSettings extends ReadWriteProxy {
             data.settings.offerHints = true;
 
             data.version = 30;
+        }
+
+        if (!data.mods) {
+            data.mods = [];
+        }
+
+        if (!data.mods.includes("soundZ")) {
+            data.settings.musicMuted = false;
+            data.settings.soundsMuted = false;
+
+            data.mods.push("soundZ");
         }
 
         return ExplainedResult.good();

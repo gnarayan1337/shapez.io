@@ -260,6 +260,30 @@ export class BoolSetting extends BaseSetting {
     }
 }
 
+export class BoolSettingShort extends BoolSetting {
+    constructor(id, category, changeCb = null, enabledCb = null) {
+        super(id, category, changeCb, enabledCb);
+    }
+
+    /**
+     * @param {Application} app
+     */
+    getHtml(app) {
+        const available = this.getIsAvailable(app);
+        return `
+        <div class="setting cardbox ${available ? "enabled" : "disabled"}">
+            ${available ? "" : `<span class="standaloneOnlyHint">${T.demo.settingNotAvailable}</span>`}
+
+            <div class="row">
+                <label>${T.settings.labels[this.id].title}</label>
+                <div class="value checkbox checked" data-setting="${this.id}">
+                <span class="knob"></span>
+                </div>
+            </div>
+        </div>`;
+    }
+}
+
 export class RangeSetting extends BaseSetting {
     constructor(
         id,

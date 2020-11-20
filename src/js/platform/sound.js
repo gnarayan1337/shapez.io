@@ -106,6 +106,9 @@ export class SoundInterface {
 
         this.pageIsVisible = true;
 
+        this.musicMuted = false;
+        this.soundsMuted = false;
+
         this.musicVolume = 1.0;
         this.soundVolume = 1.0;
     }
@@ -127,11 +130,13 @@ export class SoundInterface {
             this.music[musicPath] = music;
         }
 
+        this.musicMuted = this.app.settings.getAllSettings().musicMuted;
+        this.soundsMuted = this.app.settings.getAllSettings().soundsMuted;
         this.musicVolume = this.app.settings.getAllSettings().musicVolume;
         this.soundVolume = this.app.settings.getAllSettings().soundVolume;
 
         if (G_IS_DEV && globalConfig.debug.disableMusic) {
-            this.musicVolume = 0.0;
+            this.musicMuted = true;
         }
 
         return Promise.resolve();
@@ -166,6 +171,47 @@ export class SoundInterface {
         }
         // @ts-ignore
         return Promise.all(...promises);
+    }
+
+    /**
+     * Returns if the music is muted
+     * @returns {boolean}
+     */
+    getMusicMuted() {
+        return this.musicMuted;
+    }
+
+    /**
+     * Returns if sounds are muted
+     * @returns {boolean}
+     */
+    getSoundsMuted() {
+        return this.soundsMuted;
+    }
+
+    /**
+     * Sets if the music is muted
+     * @param {boolean} muted
+     */
+    setMusicMuted(muted) {
+        this.musicMuted = muted;
+        if (this.musicMuted) {
+            if (this.currentMusic) {
+                this.currentMusic.stop();
+            }
+        } else {
+            if (this.currentMusic) {
+                this.currentMusic.play(this.musicVolume);
+            }
+        }
+    }
+
+    /**
+     * Sets if the sounds are muted
+     * @param {boolean} muted
+     */
+    setSoundsMuted(muted) {
+        this.soundsMuted = muted;
     }
 
     /**
@@ -211,7 +257,7 @@ export class SoundInterface {
         this.pageIsVisible = pageIsVisible;
         if (this.currentMusic) {
             if (pageIsVisible) {
-                if (!this.currentMusic.isPlaying()) {
+                if (!this.currentMusic.isPlaying() && !this.musicMuted) {
                     this.currentMusic.play(this.musicVolume);
                 }
             } else {
@@ -224,6 +270,9 @@ export class SoundInterface {
      * @param {string} key
      */
     playUiSound(key) {
+        if (this.soundsMuted) {
+            return;
+        }
         if (!this.sounds[key]) {
             logger.warn("Sound", key, "not found, probably not loaded yet");
             return;
@@ -242,7 +291,7 @@ export class SoundInterface {
             logger.warn("Music", key, "not found, probably not loaded yet");
             return;
         }
-        if (!this.pageIsVisible) {
+        if (!this.pageIsVisible || this.soundsMuted) {
             return;
         }
 
@@ -271,7 +320,7 @@ export class SoundInterface {
                 this.currentMusic.stop();
             }
             this.currentMusic = music;
-            if (music && this.pageIsVisible) {
+            if (music && this.pageIsVisible && !this.musicMuted) {
                 logger.log("Starting", this.currentMusic.key);
                 music.play(this.musicVolume);
             }

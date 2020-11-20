@@ -84,11 +84,18 @@ export class HUDGameMenu extends BaseHUDPart {
             }
         });
 
+        this.musicButton = makeDiv(this.element, null, ["button", "music"]);
+        this.sfxButton = makeDiv(this.element, null, ["button", "sfx"]);
         this.saveButton = makeDiv(this.element, null, ["button", "save", "animEven"]);
         this.settingsButton = makeDiv(this.element, null, ["button", "settings"]);
 
+        this.trackClicks(this.musicButton, this.toggleMusic);
+        this.trackClicks(this.sfxButton, this.toggleSfx);
         this.trackClicks(this.saveButton, this.startSave);
         this.trackClicks(this.settingsButton, this.openSettings);
+
+        this.musicButton.classList.toggle("muted", this.root.app.settings.getAllSettings().musicMuted);
+        this.sfxButton.classList.toggle("muted", this.root.app.settings.getAllSettings().soundsMuted);
     }
 
     initialize() {
@@ -170,5 +177,17 @@ export class HUDGameMenu extends BaseHUDPart {
 
     openSettings() {
         this.root.hud.parts.settingsMenu.show();
+    }
+
+    toggleMusic() {
+        const newValue = !this.root.app.settings.getAllSettings().musicMuted;
+        this.root.app.settings.updateSetting("musicMuted", newValue);
+        this.musicButton.classList.toggle("muted", newValue);
+    }
+
+    toggleSfx() {
+        const newValue = !this.root.app.settings.getAllSettings().soundsMuted;
+        this.root.app.settings.updateSetting("soundsMuted", newValue);
+        this.sfxButton.classList.toggle("muted", newValue);
     }
 }

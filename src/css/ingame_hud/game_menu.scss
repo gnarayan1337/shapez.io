@@ -53,12 +53,28 @@
             }
         }
 
+        &.music {
+            grid-column: 3;
+            background-image: uiResource("icons/music_on.png");
+            &.muted {
+                background-image: uiResource("icons/music_off.png");
+            }
+        }
+
+        &.sfx {
+            grid-column: 4;
+            background-image: uiResource("icons/sound_on.png");
+            &.muted {
+                background-image: uiResource("icons/sound_off.png");
+            }
+        }
+
         &.save {
             & {
                 /* @load-async */
                 background-image: uiResource("icons/save.png");
             }
-            grid-column: 3;
+            grid-column: 5;
             @include MakeAnimationWrappedEvenOdd(0.5s ease-in-out) {
                 0% {
                     transform: scale(1, 1);
@@ -92,7 +108,7 @@
         }
 
         &.settings {
-            grid-column: 4;
+            grid-column: 6;
             & {
                 /* @load-async */
                 background-image: uiResource("icons/settings_menu_settings.png");
