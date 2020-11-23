@@ -566,12 +566,9 @@ export class ItemProcessorSystem extends GameSystemWithFilter {
 
         const network = payload.entity.components.WiredPins.slots[0].linkedNetwork;
         const networkValue = network && network.hasValue() ? network.currentValue : null;
-        if (!isTruthyItem(networkValue)) {
-            return;
-        }
         const staticComp = payload.entity.components.StaticMapEntity;
         this.root.soundProxy.play3D(
-            SOUNDS.placeBuilding,
+            isTruthyItem(networkValue) ? SOUNDS.badgeNotification : SOUNDS.placeBuilding,
             staticComp.origin.add(staticComp.getTileSize().divideScalar(2))
         );
     }
