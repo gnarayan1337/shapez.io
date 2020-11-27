@@ -12,6 +12,7 @@ import { ColorItem, COLOR_ITEM_SINGLETONS } from "../items/color_item";
 import { ShapeItem } from "../items/shape_item";
 import { SOUNDS } from "../../platform/sound";
 import { Vector } from "../../core/vector";
+import { playNoteBlock } from "../note_player";
 
 /**
  * We need to allow queuing charges, otherwise the throughput will stall
@@ -564,13 +565,7 @@ export class ItemProcessorSystem extends GameSystemWithFilter {
             doNotTrack: true,
         });
 
-        const network = payload.entity.components.WiredPins.slots[0].linkedNetwork;
-        const networkValue = network && network.hasValue() ? network.currentValue : null;
-        const staticComp = payload.entity.components.StaticMapEntity;
-        this.root.soundProxy.play3D(
-            isTruthyItem(networkValue) ? SOUNDS.badgeNotification : SOUNDS.placeBuilding,
-            staticComp.origin.add(staticComp.getTileSize().divideScalar(2))
-        );
+        playNoteBlock(payload.entity, this.root);
     }
 
     /**

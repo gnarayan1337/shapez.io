@@ -47,7 +47,7 @@ export class SoundInstanceInterface {
         return Promise.resolve();
     }
 
-    play(volume) {
+    play(volume, rate = 1) {
         abstract;
     }
 
@@ -286,7 +286,7 @@ export class SoundInterface {
      * @param {Vector} worldPosition
      * @param {GameRoot} root
      */
-    play3DSound(key, worldPosition, root) {
+    play3DSound(key, worldPosition, root, rate = 1) {
         if (!this.sounds[key]) {
             logger.warn("Music", key, "not found, probably not loaded yet");
             return;
@@ -303,7 +303,7 @@ export class SoundInterface {
         let volume = this.soundVolume;
         volume *= clamp(1 - (root.camera.center.toTileSpace().distance(worldPosition) - 20) / 30);
         volume *= clamp(1 + root.camera.zoomLevel - 0.9);
-        this.sounds[key].play(clamp(volume));
+        this.sounds[key].play(clamp(volume), rate);
     }
 
     /**

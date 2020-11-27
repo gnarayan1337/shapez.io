@@ -50,10 +50,12 @@ class SoundSpritesContainer {
         ]));
     }
 
-    play(volume, key) {
+    play(volume, key, rate = 1) {
         if (this.howl) {
+            assert(0.5 <= rate && rate <= 4, "Invalid playback rate: " + rate);
             const instance = this.howl.play(key);
             this.howl.volume(volume, instance);
+            this.howl.rate(rate, instance);
         }
     }
 
@@ -81,8 +83,8 @@ class WrappedSoundInstance extends SoundInstanceInterface {
         return this.spriteContainer.load();
     }
 
-    play(volume) {
-        this.spriteContainer.play(volume, this.key);
+    play(volume, rate = 1) {
+        this.spriteContainer.play(volume, this.key, rate);
     }
 
     deinitialize() {

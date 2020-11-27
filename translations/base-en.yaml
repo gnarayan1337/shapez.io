@@ -734,7 +734,7 @@ buildings:
         default:
             name: &note_block Note Block
             # planned: Plays a note corresponding to its wires input when an item passes through.
-            description: Plays a sound when an item passes through. If the wires input is truthy, it plays the upgrade notification sound. Otherwise, it plays the building placed sound.
+            description: Plays a sound when an item passes through. Send booleans into the wires input for a pitchless sound, send colors for a major scale, and send shapes to play any instrument and pitch through a complicated encoding.
 
 storyRewards:
     # Those are the rewards gained from completing the store
