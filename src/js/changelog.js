@@ -1,5 +1,10 @@
 export const CHANGELOG = [
     {
+        version: "soundZ 0.1.0",
+        date: "27.11.2020",
+        entries: ["Added note block building and basic functionality"],
+    },
+    {
         version: "1.2.1",
         date: "unreleased",
         entries: [
